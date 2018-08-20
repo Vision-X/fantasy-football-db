@@ -6,49 +6,73 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 var app = express();
 
+var json = [];
+
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(bodyParser.json());
 app.use(cors());
 
-app.get('/scrape', ((req, res) => {
+app.get('/scrape', function(req, res) {
 
   let url = 'https://www.fantasypros.com/nfl/rankings/ppr-cheatsheets.php';
-
   request(url, function(error, response, html) {
     if (!error) {
-      console.log("no error so far");
+      console.log("no errors...");
       let $ = cheerio.load(html);
-      let playerNames = [];
+      let playerArr = [];
 
       $('tbody').children('.player-row').each(function(i, elem) {
-        // console.log("elements in player row...", elem);
-        // console.log("element", elem);
         if (elem.name === 'tr') {
           let tRow = $(this).children();
           let name = tRow.eq(2).children().children().eq(0).text();
-          let position = tRow.eq(3).text();
+          let teamName = tRow.eq(2).children().eq(1).text();
+          let position = tRow.eq(3).text().replace(/\d/g,'');
           let bye = tRow.eq(4).text();
           let bestRank = tRow.eq(5).text();
           let worstRank = tRow.eq(6).text();
           let avgRank = tRow.eq(7).text();
           let adp = tRow.eq(9).text();
-
-          console.log("-----Player-----");
-          console.log("name: ", name)
-          console.log("position: ", position);
-          console.log("bye: ", bye);
-          console.log("ranks...... ");
-          console.log(" best: " + bestRank );
-          console.log(" worst: " + worstRank );
-          console.log(" avg: " + avgRank );
-          console.log("ADP: ", adp);
+          let playerObj = {
+            name,
+            teamName,
+            position,
+            bye,
+            bestRank,
+            worstRank,
+            avgRank,
+            adp
+          };
+          playerArr.push(playerObj)
         }
       })
+
+      json.push(playerArr);
+
+      fs.writeFile('rankings.json', JSON.stringify(json, null, 4), function(err) {
+        console.log('File successfully written!');
+        // console.log("players???", json);
+      })
     }
+      res.send("player data has been scraped!");
+    })
+})
+
+app.get('/crazy', (req, res) => {
+  res.json({
+    message: "not quite crazy but getting there..."
   })
+})
 
-
-}))
+app.get('/rankings', (req, res) => {
+  var content;
+  fs.readFile('./rankings.json', 'utf8', function read(err, data) {
+    if (err) { throw err }
+    content = JSON.parse(data);
+    res.json({
+      data: content
+    })
+  })
+})
 
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
