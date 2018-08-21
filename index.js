@@ -56,7 +56,7 @@ app.get('/scrape', function(req, res) {
   })
 })
 
-app.get('/rankings', function(req, res) {
+app.get('/rankings', cors(), function(req, res, next) {
   var content;
   fs.readFile('./rankings.json', 'utf8', function read(err, data) {
     if (err) { throw err }
@@ -67,7 +67,7 @@ app.get('/rankings', function(req, res) {
   })
 })
 
-app.get('/rankings.json', function(req, res) {
+app.get('/rankings.json', cors(), function(req, res, next) {
   res.json({
     data: json
   })
