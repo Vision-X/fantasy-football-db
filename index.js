@@ -57,25 +57,25 @@ app.get('/scrape', function(req, res, next) {
 })
 
 app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Headers", "Origin,Content-Type, Authorization, x-id, Content-Length, X-Requested-With");
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
   next();
 });
 
-app.get('/rankings', function(req, res, next) {
-  var content;
-  fs.readFile('./rankings.json', 'utf8', function read(err, data) {
-    if (err) { throw err }
-    content = JSON.parse(data);
-    res.json({
-      data: content
-    })
-  })
-})
+// app.get('/rankings', function(req, res, next) {
+//   var content;
+//   fs.readFile('./rankings.json', 'utf8', function read(err, data) {
+//     if (err) { throw err }
+//     content = JSON.parse(data);
+//     res.json({
+//       data: content
+//     })
+//   })
+// })
 
-app.get('/rankings.json', function(req, res, next) {
+app.get('/rankings.json', function(req, res) {
   console.log("shouldnt be any cors issues now")
   res.json({
     data: json
