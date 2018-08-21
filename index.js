@@ -56,7 +56,7 @@ app.get('/scrape', function(req, res) {
   })
 })
 
-app.get('/rankings', (req, res) => {
+app.get('/rankings', function(req, res) {
   var content;
   fs.readFile('./rankings.json', 'utf8', function read(err, data) {
     if (err) { throw err }
@@ -67,7 +67,7 @@ app.get('/rankings', (req, res) => {
   })
 })
 
-app.get('/players', (req, res) => {
+app.get('/players', function(req, res) {
   res.json({
     data: json
   })
