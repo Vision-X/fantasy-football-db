@@ -2,17 +2,17 @@ var express = require('express');
 var fs = require('fs');
 var request = require('request');
 var cheerio = require('cheerio');
-var bodyParser = require('body-parser');
+// var bodyParser = require('body-parser');
 var cors = require('cors');
 var app = express();
 
 var json = [];
 
-app.use(bodyParser.urlencoded({ extended: true}));
-app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true}));
+// app.use(bodyParser.json());
 app.use(cors());
 
-app.get('/scrape', function(req, res) {
+app.get('/scrape', function(req, res, next) {
 
   let url = 'https://www.fantasypros.com/nfl/rankings/ppr-cheatsheets.php';
   request(url, function(error, response, html) {
