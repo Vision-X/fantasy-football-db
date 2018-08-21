@@ -24,7 +24,7 @@ app.get('/scrape', function(req, res) {
       $('tbody').children('.player-row').each(function(i, elem) {
         if (elem.name === 'tr') {
           let tRow = $(this).children();
-          let name = tRow.eq(2).children().children().eq(0).text();
+          let playerName = tRow.eq(2).children().children().eq(0).text();
           let teamName = tRow.eq(2).children().eq(1).text();
           let position = tRow.eq(3).text().replace(/\d/g,'');
           let bye = tRow.eq(4).text();
@@ -33,7 +33,7 @@ app.get('/scrape', function(req, res) {
           let avgRank = tRow.eq(7).text();
           let adp = tRow.eq(9).text();
           let playerObj = {
-            name,
+            playerName,
             teamName,
             position,
             bye,
@@ -50,16 +50,9 @@ app.get('/scrape', function(req, res) {
 
       fs.writeFile('rankings.json', JSON.stringify(json, null, 4), function(err) {
         console.log('File successfully written!');
-        // console.log("players???", json);
       })
     }
-      res.send("player data has been scraped!");
-    })
-})
-
-app.get('/crazy', (req, res) => {
-  res.json({
-    message: "not quite crazy but getting there..."
+    res.send("player data has been scraped!");
   })
 })
 
