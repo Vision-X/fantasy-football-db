@@ -67,7 +67,7 @@ app.get('/rankings', function(req, res) {
   })
 })
 
-app.get('/players', function(req, res) {
+app.get('/rankings.json', function(req, res) {
   res.json({
     data: json
   })
