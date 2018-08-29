@@ -7,6 +7,7 @@ var cors = require('cors');
 var app = express();
 
 var json = [];
+var half-ppr-json = [];
 
 // app.use(bodyParser.urlencoded({ extended: true}));
 // app.use(bodyParser.json());
@@ -56,6 +57,7 @@ app.get('/scrape', function(req, res, next) {
   })
 })
 
+// TEST IF THIS IS WORKING && SAFE over app.use(cors());
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Credentials", "true");
@@ -76,11 +78,11 @@ app.use(function(req, res, next) {
 // })
 
 app.get('/rankings.json', function(req, res) {
-  console.log("shouldnt be any cors issues now")
   res.json({
     data: json
   })
 })
+
 
 // NEW SCRAPE SECTION FOR HALF PPR
 // TEST ON SITE AND CHECK JSON BEFORE DEPLOYMENT
@@ -122,7 +124,7 @@ app.get('/half-prr-scrape', function(req, res, next) {
 
       json.push(playerArr);
 
-      fs.writeFile('half-ppr-rankings.json', JSON.stringify(json, null, 4), function(err) {
+      fs.writeFile('half-ppr-rankings.json', JSON.stringify(half-ppr-json, null, 4), function(err) {
         console.log('File successfully written!');
       })
     }
@@ -130,7 +132,6 @@ app.get('/half-prr-scrape', function(req, res, next) {
 }
 
 app.get('/half-prr-rankings.json', function(req, res) {
-  console.log("shouldnt be any cors issues now")
   res.json({
     data: json
   })
