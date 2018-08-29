@@ -82,6 +82,60 @@ app.get('/rankings.json', function(req, res) {
   })
 })
 
+// NEW SCRAPE SECTION FOR HALF PPR
+// TEST ON SITE AND CHECK JSON BEFORE DEPLOYMENT
+
+app.get('/half-prr-scrape', function(req, res, next) {
+  let url;
+  //INSERT URL HERE
+
+  request(url, function(error, response, html) {
+    if (!error) {
+      console.log("no errors...");
+      let $ = cheerio.load(html);
+      let playerArr = [];
+
+      $('tbody').children('.player-row').each(function(i, elem) {
+        if (elem.name === 'tr') {
+          let tRow = $(this).children();
+          let playerName = tRow.eq(2).children().children().eq(0).text();
+          let teamName = tRow.eq(2).children().eq(1).text();
+          let position = tRow.eq(3).text().replace(/\d/g,'');
+          let bye = tRow.eq(4).text();
+          let bestRank = tRow.eq(5).text();
+          let worstRank = tRow.eq(6).text();
+          let avgRank = tRow.eq(7).text();
+          let adp = tRow.eq(9).text();
+          let playerObj = {
+            playerName,
+            teamName,
+            position,
+            bye,
+            bestRank,
+            worstRank,
+            avgRank,
+            adp
+          };
+          playerArr.push(playerObj)
+        }
+      })
+
+      json.push(playerArr);
+
+      fs.writeFile('half-ppr-rankings.json', JSON.stringify(json, null, 4), function(err) {
+        console.log('File successfully written!');
+      })
+    }
+    res.send("player data has been scraped!");
+}
+
+app.get('/half-prr-rankings.json', function(req, res) {
+  console.log("shouldnt be any cors issues now")
+  res.json({
+    data: json
+  })
+})
+
 const port = process.env.PORT || 5000;
 app.listen(port, () => {
   console.log('Listening on port 5000');
