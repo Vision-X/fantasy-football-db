@@ -2,15 +2,15 @@ var express = require('express');
 var fs = require('fs');
 var request = require('request');
 var cheerio = require('cheerio');
-// var bodyParser = require('body-parser');
+var bodyParser = require('body-parser');
 var cors = require('cors');
 var app = express();
 
 var json = [];
-var half-ppr-json = [];
+var half_ppr_json = [];
 
-// app.use(bodyParser.urlencoded({ extended: true}));
-// app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true}));
+app.use(bodyParser.json());
 app.use(cors());
 
 app.get('/scrape', function(req, res, next) {
@@ -87,9 +87,8 @@ app.get('/rankings.json', function(req, res) {
 // NEW SCRAPE SECTION FOR HALF PPR
 // TEST ON SITE AND CHECK JSON BEFORE DEPLOYMENT
 
-app.get('/half-prr-scrape', function(req, res, next) {
-  let url;
-  //INSERT URL HERE
+app.get('/hpscrape', function(req, res, next) {
+  let url = "https://www.fantasypros.com/nfl/rankings/half-point-ppr-cheatsheets.php";
 
   request(url, function(error, response, html) {
     if (!error) {
@@ -122,16 +121,28 @@ app.get('/half-prr-scrape', function(req, res, next) {
         }
       })
 
-      json.push(playerArr);
+      half_ppr_json.push(playerArr);
 
-      fs.writeFile('half-ppr-rankings.json', JSON.stringify(half-ppr-json, null, 4), function(err) {
+      fs.writeFile('./hprankings.json', JSON.stringify(half_ppr_json, null, 4), function(err) {
         console.log('File successfully written!');
       })
     }
     res.send("player data has been scraped!");
-}
+  })
+})
 
-app.get('/half-prr-rankings.json', function(req, res) {
+app.get('/hprankings', function(req, res, next) {
+  var content;
+  fs.readFile('./hprankings.json', 'utf8', function read(err, data) {
+    if (err) { throw err }
+    content = JSON.parse(data);
+    res.json({
+      data: content
+    })
+  })
+})
+
+app.get('/hprankings.json', function(req, res) {
   res.json({
     data: json
   })
