@@ -67,26 +67,22 @@ app.use(function(req, res, next) {
   next();
 });
 
-// app.get('/rankings', function(req, res, next) {
-//   var content;
-//   fs.readFile('./rankings.json', 'utf8', function read(err, data) {
-//     if (err) { throw err }
-//     content = JSON.parse(data);
-//     res.json({
-//       data: content
-//     })
-//   })
-// })
+app.get('/rankings', function(req, res, next) {
+  var content;
+  fs.readFile('./rankings.json', 'utf8', function read(err, data) {
+    if (err) { throw err }
+    content = JSON.parse(data);
+    res.json({
+      data: content
+    })
+  })
+})
 
 app.get('/rankings.json', function(req, res) {
   res.json({
     data: json
   })
 })
-
-
-// NEW SCRAPE SECTION FOR HALF PPR
-// TEST ON SITE AND CHECK JSON BEFORE DEPLOYMENT
 
 app.get('/hpscrape', function(req, res, next) {
   let url = "https://www.fantasypros.com/nfl/rankings/half-point-ppr-cheatsheets.php";
@@ -195,16 +191,16 @@ app.get('/dynastyscrape', function(req, res, next) {
   })
 })
 
-// app.get('/dynastyrankings', function(req, res, next) {
-//   var content;
-//   fs.readFile('./dynastyRankings.json', 'utf8', function read(err, data) {
-//     if (err) { throw err }
-//     content = JSON.parse(data);
-//     res.json({
-//       data: content
-//     })
-//   })
-// })
+app.get('/dynastyrankings', function(req, res, next) {
+  var content;
+  fs.readFile('./dynastyRankings.json', 'utf8', function read(err, data) {
+    if (err) { throw err }
+    content = JSON.parse(data);
+    res.json({
+      data: content
+    })
+  })
+})
 
 app.get('/dynastyRankings.json', function(req, res) {
   res.json({
