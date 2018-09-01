@@ -8,6 +8,7 @@ var app = express();
 
 var json = [];
 var half_ppr_json = [];
+var dynastyRankings = [];
 
 app.use(bodyParser.urlencoded({ extended: true}));
 app.use(bodyParser.json());
@@ -145,6 +146,52 @@ app.get('/hprankings', function(req, res, next) {
 app.get('/hprankings.json', function(req, res) {
   res.json({
     data: json
+  })
+})
+
+app.get('/dynasty-rankings', function(req, res, next) {
+  let url = "https://www.fantasypros.com/nfl/rankings/dynasty-overall.php";
+
+  request(url,function(error, response, html) {
+    if (!error) {
+      console.log("no errors...");
+      let $ = cheerio.load(html);
+      let playerArr = [];
+
+      $('tbody').children('.player-row').each(function(i, elem) {
+        if (elem.name === 'tr') {
+          let tRow = $(this).children();
+          let playerName = tRow.eq(2).children().children().eq(0).text();
+          let teamName = tRow.eq(2).children().eq(1).text();
+          let position = tRow.eq(3).text().replace(/\d/g,'');
+          let bye = tRow.eq(4).text();
+          let age = tRow.eq(5).text();
+          let bestRank = tRow.eq(6).text();
+          let worstRank = tRow.eq(7).text();
+          let avgRank = tRow.eq(8).text();
+          let stdDev = tRow.eq(9).text();
+          let playerObj = {
+            playerName,
+            teamName,
+            position,
+            bye,
+            age,
+            bestRank,
+            worstRank,
+            avgRank,
+            stdDev
+          };
+          playerArr.push(playerObj)
+        }
+      })
+
+      dynastyRankings.push(playerArr);
+
+      fs.writeFile('./dynastyRankings.json', JSON.stringify(dynastyRankings, null, 4), function(err) {
+        console.log('File successfully written!');
+      })
+    }
+    res.send("player data has been scraped!");
   })
 })
 
