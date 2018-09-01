@@ -149,7 +149,7 @@ app.get('/hprankings.json', function(req, res) {
   })
 })
 
-app.get('/dynasty-rankings', function(req, res, next) {
+app.get('/dynastyscrape', function(req, res, next) {
   let url = "https://www.fantasypros.com/nfl/rankings/dynasty-overall.php";
 
   request(url,function(error, response, html) {
@@ -192,6 +192,23 @@ app.get('/dynasty-rankings', function(req, res, next) {
       })
     }
     res.send("player data has been scraped!");
+  })
+})
+
+// app.get('/dynastyrankings', function(req, res, next) {
+//   var content;
+//   fs.readFile('./dynastyRankings.json', 'utf8', function read(err, data) {
+//     if (err) { throw err }
+//     content = JSON.parse(data);
+//     res.json({
+//       data: content
+//     })
+//   })
+// })
+
+app.get('/dynastyRankings.json', function(req, res) {
+  res.json({
+    data: json
   })
 })
 
